@@ -3,7 +3,7 @@
     <template v-for="item in options">
       <el-option :key="item.id" :label="item[showField]" :value="item.id" filterable :style="optionsStyle">
         <span v-if="level > 0" style="float: left;color: red">└</span>
-        {{ item.text }}
+        {{ item[showField] }}
       </el-option>
       <ljSelectOptions v-if="item.children && item.children.length > 0" :key="item.id + 'chil'" :options="item.children" :show-field="showField" :level="level + 1"/>
     </template>
