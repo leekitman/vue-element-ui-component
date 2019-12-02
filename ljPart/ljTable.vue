@@ -74,7 +74,7 @@ component：指定格式化组件；组件必须有label和prop两个属性，�
 
     <!-- 分页组件 -->
     <div class="pagination-container" v-if="showPagination">
-      <el-pagination :current-page="listQuery.pageNo" :page-sizes="[10,20,40,60]" :page-size="listQuery.pageSize" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" :hide-on-single-page="true"/>
+      <el-pagination :current-page="listQuery.pageNo" :page-sizes="[10,20,40,60]" :page-size="listQuery.pageSize" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" :hide-on-single-page="hideOnSinglePage"/>
     </div>
   </div>
 </template>
@@ -100,7 +100,8 @@ export default {
     optionColWidth: { type: String, default: '150' },
     selectionChange: { type: Function, default: function(sels) {} },
     currentChange: { type: Function, default: function(currentRow, oldCurrentRow) {} },
-    dataStructure: { type: String, default: 'page' }
+    dataStructure: { type: String, default: 'page' },
+    hideOnSinglePage: { type: Boolean, default: false }
   },
   data() {
     return {
