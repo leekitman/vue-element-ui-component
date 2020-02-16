@@ -1,6 +1,7 @@
 <!--
-version: 1.1.0
-2019-7-16更新：table-reload触发刷新时，强制重置页码为第一页，因为这样更合理
+version: 1.1.1
+2019-07-16更新：table-reload触发刷新时，强制重置页码为第一页，因为这样更合理
+2020-02-16更新：删除成功的提示信息修改，之前一直是空的
 props说明：
 序号	props属性名	        类型	    作用描述	                                                              默认值
 1	    deleteTips	      String	    删除按钮点击后的提示内容	                                              “此操作会将该记录永久删除, 是否继续?”
@@ -224,7 +225,10 @@ export default {
       }).then(() => {
         // 删除
         this.serviceDeleteRow(row.id).then(response => {
-          this.$message(response.data.message)
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
           this.getTableData()
         })
       }).catch(() => {

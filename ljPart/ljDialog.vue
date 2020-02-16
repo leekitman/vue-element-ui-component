@@ -1,4 +1,8 @@
 <!--
+version: 1.1.2
+2020-02-16更新：提交成功的提示信息修改，之前一直是空的
+2020-02-16更新：提交过程loading改为form的loading
+
 props说明：
 序号	props属性名	        类型	      作用描述	                                            默认值	示例
 1	    titleSuffix	      String	    对话框的标题后缀，比如【添加相册】、【编辑相册】中的相册	  ""
@@ -39,8 +43,8 @@ props说明：
 <template>
   <div>
     <!-- 表单对话框 -->
-    <el-dialog :visible.sync="dialogVisible" :before-close="handleClose" :title="dialogTitle" :width="width" :modal-append-to-body="false" :append-to-body="true" :close-on-click-modal="false" v-loading="loading">
-      <el-form ref="form" :rules="rules" :model="form" status-icon :label-width="labelWidth" v-if="dialogVisible">
+    <el-dialog :visible.sync="dialogVisible" :before-close="handleClose" :title="dialogTitle" :width="width" :modal-append-to-body="false" :append-to-body="true" :close-on-click-modal="false">
+      <el-form ref="form" :rules="rules" :model="form" status-icon :label-width="labelWidth" v-if="dialogVisible" v-loading="loading">
 
         <slot/>
 
@@ -140,7 +144,10 @@ export default {
             this.loading = true
             this.serviceAddRow(this.form).then(response => {
               this.loading = false
-              this.$message(response.data.message)
+              this.$message({
+                type: 'success',
+                message: '提交成功'
+              })
               this.resetForm()
               this.dialogVisible = false
               this.serviceRefresh()
@@ -154,7 +161,10 @@ export default {
               this.loading = true
               this.serviceUpdateRow(this.form).then(response => {
                 this.loading = false
-                this.$message(response.data.message)
+                this.$message({
+                  type: 'success',
+                  message: '提交成功'
+                })
                 this.resetForm()
                 this.dialogVisible = false
                 this.serviceRefresh()
@@ -163,7 +173,10 @@ export default {
                 this.loading = false
               })
             } else {
-              this.$message('form.id不能为空')
+              this.$message({
+                type: 'warning',
+                message: 'form.id不能为空'
+              })
             }
           }
         } else {

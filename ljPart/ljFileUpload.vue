@@ -9,10 +9,12 @@
     <span class="error-message" v-if="hasError">上传图片不能超过{{ maxCount }}张</span>
     <div class="preview-box">
       <div v-for="(file, index) in fileArray" :key="index">
-        <div style="margin: 5px;">
-          <img :src="getFileUrl(file)" height="100" v-if="isImageFile(file)"/>
-          <div v-if="file">已选择：{{ file.name }}</div>
-        </div>
+        <el-card class="box-card">
+          <div style="margin: 5px;" class="preview-box-item">
+            <img :src="getFileUrl(file)" height="100" v-if="isImageFile(file)"/>
+            <div v-if="file">已选择：{{ file.name }}</div>
+          </div>
+        </el-card>
       </div>
     </div>
   </div>
@@ -85,8 +87,9 @@ export default {
       return window.URL.createObjectURL(file)
     },
     isImageFile(file) {
+      console.log('检查文件类型', file)
       if (file) {
-        return file.type === 'image/jpeg'
+        return file.type === 'image/jpeg' || file.type === 'image/png'
       } else {
         return false
       }
@@ -113,6 +116,9 @@ export default {
   left: 2px;
   opacity: 0;
   width: 140px
+}
+.preview-box-item {
+
 }
 .error-message {
   color: red
