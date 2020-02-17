@@ -1,7 +1,8 @@
 <!--
-version: 1.1.1
+version: 1.1.2
 2019-07-16更新：table-reload触发刷新时，强制重置页码为第一页，因为这样更合理
 2020-02-16更新：删除成功的提示信息修改，之前一直是空的
+2020-02-17更新：刷新列表，页数不变
 props说明：
 序号	props属性名	        类型	    作用描述	                                                              默认值
 1	    deleteTips	      String	    删除按钮点击后的提示内容	                                              “此操作会将该记录永久删除, 是否继续?”
@@ -147,10 +148,10 @@ export default {
   },
   mounted() {
     this.$on('table-reload', (isResetPage) => {
-      this.listQuery = {
-        pageNo: 1,
-        pageSize: 10
-      }
+      // this.listQuery = {
+      //   pageNo: 1,
+      //   pageSize: 10
+      // }
       this.getTableData()
     })
   },
