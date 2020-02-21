@@ -1,8 +1,10 @@
 <!--
-version: 1.1.2
+version: 1.1.4
 2019-07-16更新：table-reload触发刷新时，强制重置页码为第一页，因为这样更合理
 2020-02-16更新：删除成功的提示信息修改，之前一直是空的
 2020-02-17更新：刷新列表，页数不变
+2020-02-17更新：table增加row-key属性，用于兼容树形表格
+2020-02-21更新：table刷新时根据参数决定是否重置页数
 props说明：
 序号	props属性名	        类型	    作用描述	                                                              默认值
 1	    deleteTips	      String	    删除按钮点击后的提示内容	                                              “此操作会将该记录永久删除, 是否继续?”
@@ -55,7 +57,18 @@ component：指定格式化组件；组件必须有label和prop两个属性，�
     </div>
 
     <!-- 表格 -->
-    <el-table ref="elTable" v-loading="listLoading" :data="tableData" :key="key" border fit highlight-current-row style="width: 100%" @selection-change="selsChange" @current-change="currentChangeFun">
+    <el-table
+      ref="elTable"
+      v-loading="listLoading"
+      :data="tableData"
+      :key="key"
+      row-key="id"
+      border
+      fit
+      highlight-current-row
+      style="width: 100%"
+      @selection-change="selsChange"
+      @current-change="currentChangeFun">
       <el-table-column type="index" width="30"/>
       <el-table-column type="selection" width="40" v-if="showSelectionColumn"/>
 
@@ -148,10 +161,12 @@ export default {
   },
   mounted() {
     this.$on('table-reload', (isResetPage) => {
-      // this.listQuery = {
-      //   pageNo: 1,
-      //   pageSize: 10
-      // }
+      if (isResetPage) {
+        this.listQuery = {
+          pageNo: 1,
+          pageSize: 10
+        }
+      }
       this.getTableData()
     })
   },
