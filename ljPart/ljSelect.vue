@@ -1,8 +1,9 @@
 <!-- 树形下拉框 -->
 <!--
-version: 1.0.1
+version: 1.0.2
 更新日期：2019-07-18
 更新内容：增加props到v-model之间的计算属性，解决回显失败的问题
+更新2020-02-27：增加远程数据懒加载树机制
 options数据结构：
 [
     {
@@ -16,8 +17,17 @@ options数据结构：
 ]
 -->
 <template>
-  <el-select v-model="miValue" @input="onChange" placeholder="请选择" :clearable="true" :disabled="disabled" filterable :multiple="multiple">
-    <ljSelectOptions v-if="options && options.length > 0" :options="options" :show-field="showField"/>
+  <el-select :value="value" @input="onChange" :value-key="valueKey" placeholder="请选择" :clearable="true" :disabled="disabled" filterable :multiple="multiple">
+    <lj-select-options
+      v-if="(local && options && options.length > 0) || !local"
+      :show-field="showField"
+      :expand-all="expandAll"
+      :value-key="valueKey"
+      :value-object="valueObject"
+      :local="local"
+      :local-data="options"
+      :load-parent-id="loadRootParentId"
+      :load="load"/>
   </el-select>
 </template>
 <script>
@@ -28,30 +38,27 @@ export default {
     ljSelectOptions
   },
   props: {
-    options: { type: Array, default: () => { return [] } },
-    value: { type: String / Array, default: '' / function() { return [] } },
+    value: { type: String / Object / Array, default: '' / function() { return {} } / function() { return [] } },
     disabled: { type: Boolean, default: false },
+    valueKey: { type: String, default: 'id' },
     showField: { type: String, default: 'text' },
-    multiple: { type: Boolean, default: false }
+    multiple: { type: Boolean, default: false },
+    valueObject: { type: Boolean, default: false },
+    expandAll: { type: Boolean, default: false },
+    // 本地数据配置
+    local: { type: Boolean, default: true },
+    options: { type: Array, default: () => { return [] } },
+    // 远程数据配置
+    loadRootParentId: { type: String, default: '0' },
+    load: { type: Function, default: function(node, resolve) {} }
   },
   data() {
     return {
-      otherValue: this.value
-    }
-  },
-  computed: {
-    miValue: {
-      get: function() {
-        return this.value
-      },
-      set: function(newValue) {
-        this.otherValue = newValue
-      }
     }
   },
   methods: {
     onChange(value) {
-      this.$emit('input', this.otherValue)
+      this.$emit('input', value)
     }
   }
 }
