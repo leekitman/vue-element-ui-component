@@ -17,7 +17,7 @@ options数据结构：
 ]
 -->
 <template>
-  <el-select :value="value" @input="onChange" :value-key="valueKey" placeholder="请选择" :clearable="true" :disabled="disabled" filterable :multiple="multiple">
+  <el-select :value="value" @input="onChange" :value-key="valueKey" :placeholder="placeholder" :clearable="true" :disabled="disabled" filterable :multiple="multiple">
     <lj-select-options
       v-if="(local && options && options.length > 0) || !local"
       :show-field="showField"
@@ -44,7 +44,8 @@ export default {
     showField: { type: String, default: 'text' },
     multiple: { type: Boolean, default: false },
     valueObject: { type: Boolean, default: false },
-    expandAll: { type: Boolean, default: false },
+    expandAll: { type: Boolean, default: true },
+    placeholder: { type: String, default: '请选择' },
     // 本地数据配置
     local: { type: Boolean, default: true },
     options: { type: Array, default: () => { return [] } },
