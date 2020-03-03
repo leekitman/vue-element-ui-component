@@ -1,4 +1,7 @@
 <!--
+版本：1.0.1
+更新2020-02-03：增加字体大小功能
+
 props说明：
 序号	props属性名	        类型	      作用描述	                                            默认值	示例
 1	    reviewContent	     String	     单向绑定content，主要用于指定数据回显属性	             ""     :review-content="form.content"
@@ -48,6 +51,7 @@ export default {
             'italic',
             'underline',
             '|',
+            'fontsize',
             'forecolor',
             'backcolor',
             '|',
