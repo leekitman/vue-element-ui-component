@@ -1,6 +1,20 @@
 <!--
+version: 1.0.1
+2020-03-17更新：刷新外部表格时，增加是否重置页码的值
 示例：
 <lj-switch-column prop="status" label="状态" false-text="禁用" true-text="启用"/>
+或
+<lj-switch-column
+          prop="status"
+          label="状态"
+          false-text="禁用"
+          false-value="DISABLED"
+          true-text="启用"
+          true-value="NORMAL"
+          width="150"
+          :read-only="false"
+          :service-switch="serviceSwitchKeyStatus"
+          :refresh-table="refreshTableData"/>
  -->
 <template>
   <el-table-column :prop="prop" :label="label" :width="width" v-if="isHidden" :loading="loading">
@@ -38,7 +52,7 @@ export default {
     readOnly: { type: Boolean, default: true },
     idFieldName: { type: String, default: 'id' },
     serviceSwitch: { type: Function, default: function(id, status) {} },
-    refreshTable: { type: Function, default: function() {} }
+    refreshTable: { type: Function, default: function(isResetPage) {} }
   },
   data() {
     return {
@@ -63,6 +77,9 @@ export default {
   },
   methods: {
     onChangeFun(row) {
+      if (this.readOnly) {
+        return
+      }
       this.loading = true
       console.log('切换switch', row)
       if (this.serviceSwitch) {
@@ -82,7 +99,7 @@ export default {
         this.serviceSwitch(row[this.idFieldName], targetStatus)
           .then(response => {
             // this.$message(response.data.message)
-            this.refreshTable()
+            this.refreshTable(true)
           }).catch(reject => {
             console.error('状态切换失败')
             this.loading = false

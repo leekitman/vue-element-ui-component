@@ -1,7 +1,8 @@
 <!--
-version: 1.1.2
+version: 1.1.3
 2020-02-16更新：提交成功的提示信息修改，之前一直是空的
 2020-02-16更新：提交过程loading改为form的loading
+2020-03-17更新：刷新外部表格时，增加是否重置页码的值
 
 props说明：
 序号	props属性名	        类型	      作用描述	                                            默认值	示例
@@ -63,7 +64,7 @@ export default {
     titleSuffix: { type: String, default: '' },
     form: { type: Object, default: () => { return {} } },
     rules: { type: Object, default: () => { return {} } },
-    serviceRefresh: { type: Function, default: () => {} },
+    serviceRefresh: { type: Function, default: (isResetPage) => {} },
     serviceGetInfo: { type: Function, default: (id) => {} },
     serviceAddRow: { type: Function, default: () => {} },
     serviceUpdateRow: { type: Function, default: () => {} },
@@ -150,7 +151,7 @@ export default {
               })
               this.resetForm()
               this.dialogVisible = false
-              this.serviceRefresh()
+              this.serviceRefresh(true)
             }).catch(reject => {
               console.error('提交表单失败')
               this.loading = false
@@ -167,7 +168,7 @@ export default {
                 })
                 this.resetForm()
                 this.dialogVisible = false
-                this.serviceRefresh()
+                this.serviceRefresh(false)
               }).catch(reject => {
                 console.error('提交表单失败')
                 this.loading = false
