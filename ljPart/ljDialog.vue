@@ -1,8 +1,10 @@
 <!--
-version: 1.1.3
+version: 1.1.5
 2020-02-16更新：提交成功的提示信息修改，之前一直是空的
 2020-02-16更新：提交过程loading改为form的loading
 2020-03-17更新：刷新外部表格时，增加是否重置页码的值
+2020-03-31更新：增加一个是否显示【提交】按钮的属性
+2020-04-02更新：解决编辑时默认隐藏提交按钮问题
 
 props说明：
 序号	props属性名	        类型	      作用描述	                                            默认值	示例
@@ -50,7 +52,7 @@ props说明：
         <slot/>
 
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer" class="dialog-footer" v-if="showSubmit && tmpShowSubmit">
         <el-button type="primary" @click="cancelForm">取 消</el-button>
         <el-button type="primary" @click="submitForm">提 交</el-button>
       </span>
@@ -70,14 +72,16 @@ export default {
     serviceUpdateRow: { type: Function, default: () => {} },
     labelWidth: { type: String, default: '100px' },
     width: { type: String, default: '50%' },
-    beforeSubmitFun: { type: Function, default: () => {} }
+    beforeSubmitFun: { type: Function, default: () => {} },
+    showSubmit: { type: Boolean, default: true }
   },
   data() {
     return {
       dialogVisible: false,
       dialogCurrentOption: '添加',
       dialogCurrentMethod: 'post',
-      loading: false
+      loading: false,
+      tmpShowSubmit: true
     }
   },
   computed: {
@@ -92,6 +96,9 @@ export default {
     this.$on('open-update', (rowId) => {
       this.openDialogUpdate(rowId)
     })
+    this.$on('open-show', (rowId) => {
+      this.openDialogShow(rowId)
+    })
     this.$on('reload', () => {
       this.openDialogUpdate(this.form.id)
     })
@@ -103,6 +110,13 @@ export default {
       this.dialogVisible = true
     },
     openDialogUpdate(rowId) {
+      this.openDialogShow(rowId)
+      this.dialogCurrentOption = '编辑'
+      this.dialogCurrentMethod = 'put'
+      this.dialogVisible = true
+      this.tmpShowSubmit = true
+    },
+    openDialogShow(rowId) {
       // 请求数据
       this.form.id = rowId
       this.serviceGetInfo(rowId).then(response => {
@@ -115,8 +129,9 @@ export default {
         }
         this.$emit('reload-success', response)
       })
-      this.dialogCurrentOption = '编辑'
-      this.dialogCurrentMethod = 'put'
+      this.dialogCurrentOption = ''
+      this.dialogCurrentMethod = ''
+      this.tmpShowSubmit = false// 不允许提交
       this.dialogVisible = true
     },
     handleClose(done) {
