@@ -1,4 +1,8 @@
 <!-- 远程搜索下拉框 -->
+<!--
+version:1.0.1
+2020-07-09：兼容“值”和“对象”两种绑定模式
+ -->
 <template>
   <div>
     <el-select
@@ -32,7 +36,7 @@ export default {
   },
   props: {
     returnObj: { type: Boolean, default: false },
-    value: { type: String, default: null },
+    value: { type: String / Object, default: '' / {}},
     showField: { type: String, default: 'text' },
     keyField: { type: String, default: 'id' },
     placeholder: { type: String, default: '请输入关键词' },
@@ -58,7 +62,11 @@ export default {
     },
     miValue: {
       get: function() {
-        return this.value
+        if (this.returnObj) {
+          return this.value[this.keyField]
+        } else {
+          return this.value
+        }
       },
       set: function(newValue) {
         this.data = newValue
@@ -79,13 +87,17 @@ export default {
       }
     },
     onChange(value) {
-      var index
-      this.options.forEach((user, i) => {
-        if (value === user.id) {
-          index = i
-        }
-      })
-      this.$emit('change', this.options[index])
+      if (this.returnObj) {
+        var index
+        this.options.forEach((user, i) => {
+          if (value === user.id) {
+            index = i
+          }
+        })
+        this.$emit('change', this.options[index])
+      } else {
+        this.$emit('change', value)
+      }
     }
   }
 }
