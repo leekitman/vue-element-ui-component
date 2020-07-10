@@ -1,9 +1,10 @@
 <!-- 树形下拉框 -->
 <!--
-version: 1.0.2
+version: 1.0.3
 更新日期：2019-07-18
 更新内容：增加props到v-model之间的计算属性，解决回显失败的问题
 更新2020-02-27：增加远程数据懒加载树机制
+更新2020-07-10：增加选项禁用过滤器
 options数据结构：
 [
     {
@@ -27,7 +28,8 @@ options数据结构：
       :local="local"
       :local-data="options"
       :load-parent-id="loadRootParentId"
-      :load="load"/>
+      :load="load"
+      :disabled-filter="optionDisabledFilter"/>
   </el-select>
 </template>
 <script>
@@ -51,7 +53,9 @@ export default {
     options: { type: Array, default: () => { return [] } },
     // 远程数据配置
     loadRootParentId: { type: String, default: '0' },
-    load: { type: Function, default: function(node, resolve) {} }
+    load: { type: Function, default: function(node, resolve) {} },
+    // 选项禁用过滤器
+    optionDisabledFilter: { type: Function, default: function(option) { return false } }
   },
   data() {
     return {

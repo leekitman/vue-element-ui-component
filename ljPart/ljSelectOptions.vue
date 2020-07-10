@@ -1,11 +1,12 @@
 <!--
-版本：1.0.2
+版本：1.0.3
 更新2020-02-27：支持远程数据懒加载树机制
+更新2020-07-10：增加选项禁用过滤器
 -->
 <template>
   <div>
     <template v-for="item in options">
-      <el-option :key="item[valueKey]" :label="item[showField]" :value="valueObject?item:item[valueKey]" filterable :style="optionsStyle">
+      <el-option :key="item[valueKey]" :label="item[showField]" :value="valueObject?item:item[valueKey]" filterable :style="optionsStyle" :disabled="disabledFilter(item)">
         <span v-if="level > 0" style="float: left;color: red">└</span>
         <i class="el-icon-caret-bottom" v-if="item.expand && ((local && item.children && item.children.length > 0) || !local)" @click.stop="nodeIconClickRight(item)"></i>
         <i class="el-icon-caret-right" v-else-if="!item.expand && ((local && item.children && item.children.length > 0) || !local)" @click.stop="nodeIconClickBottom(item)"></i>
@@ -41,7 +42,9 @@ export default {
     localData: { type: Array, default: function() { return [] } },
     // 远程数据配置
     loadParentId: { type: String, default: '0' },
-    load: { type: Function, default: function(node, resolve) {} }
+    load: { type: Function, default: function(node, resolve) {} },
+    // 选项禁用过滤器
+    disabledFilter: { type: Function, default: function(option) { return false } }
   },
   data: function() {
     return {
