@@ -1,11 +1,13 @@
 <!--
-version: 1.1.5
+version: 1.1.6
 2019-07-16更新：table-reload触发刷新时，强制重置页码为第一页，因为这样更合理
 2020-02-16更新：删除成功的提示信息修改，之前一直是空的
 2020-02-17更新：刷新列表，页数不变
 2020-02-17更新：table增加row-key属性，用于兼容树形表格
 2020-02-21更新：table刷新时根据参数决定是否重置页数
 2020-04-09更新：增加外部控制loding的事件
+2020-09-29更新：增加defaultExpandAll属性
+                序号列名称默认“序号”
 props说明：
 序号	props属性名	        类型	    作用描述	                                                              默认值
 1	    deleteTips	      String	    删除按钮点击后的提示内容	                                              “此操作会将该记录永久删除, 是否继续?”
@@ -20,6 +22,8 @@ props说明：
 11	  optionColWidth	  String	    行末操作列的列宽	                                                     150
 12	  selectionChange	  Function	  表格多选触发并调用该函数传递当前选中行	                                 function(sels) {}
 13	  dataStructure	    String	    表格数据请求的响应数据结构类型，page是分页结构，data是直接返回的对象	     page
+14	  hideOnSinglePage	Boolean	    分页模块是否在只有一页的时候隐藏                                  	    false
+15	  defaultExpandAll	Boolean	    是否默认展开所有行                                              	     false
 
 触发事件说明：
 序号	    事件名	                参数	        触发后的作用	                                                                用法示例
@@ -68,9 +72,10 @@ component：指定格式化组件；组件必须有label和prop两个属性，�
       fit
       highlight-current-row
       style="width: 100%"
+      :default-expand-all="defaultExpandAll"
       @selection-change="selsChange"
       @current-change="currentChangeFun">
-      <el-table-column type="index" width="30"/>
+      <el-table-column type="index" width="30" label="序号"/>
       <el-table-column type="selection" width="40" v-if="showSelectionColumn"/>
 
       <slot name="columns"/>
@@ -117,7 +122,8 @@ export default {
     selectionChange: { type: Function, default: function(sels) {} },
     currentChange: { type: Function, default: function(currentRow, oldCurrentRow) {} },
     dataStructure: { type: String, default: 'page' },
-    hideOnSinglePage: { type: Boolean, default: false }
+    hideOnSinglePage: { type: Boolean, default: false },
+    defaultExpandAll: { type: Boolean, default: false}
   },
   data() {
     return {
