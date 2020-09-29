@@ -79,7 +79,7 @@ component：指定格式化组件；组件必须有label和prop两个属性，�
       @selection-change="selsChange"
       @current-change="currentChangeFun">
       <el-table-column type="index" width="30" label="序号"/>
-      <el-table-column type="selection" width="40" v-if="showSelectionColumn" :selectable="selectable"/>
+      <el-table-column type="selection" width="45" v-if="showSelectionColumn" :selectable="selectable"/>
 
       <slot name="columns"/>
 
