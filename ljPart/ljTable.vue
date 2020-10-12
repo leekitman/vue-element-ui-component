@@ -1,5 +1,5 @@
 <!--
-version: 1.1.7
+version: 1.1.8
 2019-07-16更新：table-reload触发刷新时，强制重置页码为第一页，因为这样更合理
 2020-02-16更新：删除成功的提示信息修改，之前一直是空的
 2020-02-17更新：刷新列表，页数不变
@@ -9,6 +9,7 @@ version: 1.1.7
 2020-09-29更新：增加defaultExpandAll属性
                 序号列名称默认“序号”
 2020-09-29更新：增加selectable属性：决定每一行是否可选
+2020-10-12更新：增加组件doc注释
 props说明：
 序号	props属性名	              类型	    作用描述	                                                              默认值
 1	    deleteTips	            String	    删除按钮点击后的提示内容	                                              “此操作会将该记录永久删除, 是否继续?”
@@ -78,7 +79,7 @@ component：指定格式化组件；组件必须有label和prop两个属性，�
       :default-expand-all="defaultExpandAll"
       @selection-change="selsChange"
       @current-change="currentChangeFun">
-      <el-table-column type="index" width="30" label="序号"/>
+      <el-table-column type="index" width="100" label="序号"/>
       <el-table-column type="selection" width="45" v-if="showSelectionColumn" :selectable="selectable"/>
 
       <slot name="columns"/>
@@ -104,8 +105,28 @@ component：指定格式化组件；组件必须有label和prop两个属性，�
 </template>
 
 <script>
+/**
+ * 分页数据表格
+ * @description 统一风格的数据表格，简化了许多功能
+ * @property {String} deleteTips 点击删除按钮弹出确认框的提示内容
+ * @property {Object} searchQuery 触发事件`table-reload`，组件会调用`serviceGetPage`方法刷新表格数据，方法的参数就是`searchQuery`
+ * @property {Boolean} showEditBtn 是否显示右侧操作栏的【编辑】按钮
+ * @property {Boolean} showDeleteBtn 是否显示右侧操作栏的【删除】按钮
+ * @property {Boolean} showOptionColumn 是否显示右侧操作栏
+ * @property {Boolean} showSelectionColumn 是否显示左侧多选栏
+ * @property {Boolean} showPagination 是否显示底部分页组件
+ * @property {Function} serviceGetPage 服务接口-获取表格数据
+ * @property {Function} serviceDeleteRow 服务接口-删除一条表格数据
+ * @property {String} idName 服务接口`serviceGetPage`的结果中，哪个字段作为表格数据主键。默认'id'
+ * @property {String} optionColWidth 右侧操作栏宽度，默认150
+ * @property {Function} selectionChange 当表格多选发生变更时会被组件调用的回调函数
+ * @property {Function} currentChange 当表格当选发生变更时会被组件调用的回调函数
+ * @property {String} dataStructure 服务接口`serviceGetPage`的请求结果是什么结构类型：可选项[page, data]
+ * @property {Boolean} hideOnSinglePage 是否在只有一页数据时隐藏分页组件
+ * @property {Boolean} defaultExpandAll 是否默认展开所有节点
+ * @property {Function} selectable 判断每一行是否可选
+ */
 import ImagePopoverColumn from '@/components/columnFormat/imagePopoverColumn'
-
 export default {
   components: {
     ImagePopoverColumn
