@@ -3,7 +3,7 @@
 <image-popover-column prop="previewUrlFile" label="帖子预览图"/>
  -->
 <template>
-  <el-table-column :prop="prop" :label="label" width="70" v-if="isHidden">
+  <el-table-column :prop="prop" :label="label" width="75" v-if="isHidden">
     <template slot-scope="scope">
       <image-popover :image-url="scope.row[prop]"/>
     </template>
