@@ -1,5 +1,5 @@
 <!--
-version: 1.1.8
+version: 1.1.11
 2019-07-16更新：table-reload触发刷新时，强制重置页码为第一页，因为这样更合理
 2020-02-16更新：删除成功的提示信息修改，之前一直是空的
 2020-02-17更新：刷新列表，页数不变
@@ -10,42 +10,9 @@ version: 1.1.8
                 序号列名称默认“序号”
 2020-09-29更新：增加selectable属性：决定每一行是否可选
 2020-10-12更新：增加组件doc注释
-props说明：
-序号	props属性名	              类型	    作用描述	                                                              默认值
-1	    deleteTips	            String	    删除按钮点击后的提示内容	                                              “此操作会将该记录永久删除, 是否继续?”
-2	    searchQuery	            Object	    表格数据重载时的参数，用于带参刷新和搜索	                               {}
-4	    showEditBtn	            Boolean	    行末【编辑】按钮是否隐藏和禁用	                                        true
-5	    showDeleteBtn	          Boolean	    行末【删除】按钮是否隐藏和禁用	                                        true
-6	    showOptionColumn	      Boolean	    行末操作列是否隐藏	                                                   true
-7	    showPagination	        Boolean	    分页组件是否显示	                                                     true
-8	    serviceGetPage	        Function	  获取表格数据api方法	                                                   function() {}
-9	    serviceDeleteRow	      Function	  删除表格记录api方法                                                    function() {}
-10	  idName	                String	    表格数据中主键的属性名	                                                id
-11	  optionColWidth	        String	    行末操作列的列宽	                                                     150
-12	  selectionChange	        Function	  表格多选触发并调用该函数传递当前选中行	                                 function(sels) {}
-13	  dataStructure	          String	    表格数据请求的响应数据结构类型，page是分页结构，data是直接返回的对象	     page
-14	  hideOnSinglePage	      Boolean	    分页模块是否在只有一页的时候隐藏                                  	    false
-15	  defaultExpandAll	      Boolean	    是否默认展开所有行                                              	     false
-16    showSelectionColumn     Boolean     是否显示多选列                                                         false
-16	  selectable	            Function	  决定每一行是否可选，仅当showSelectionColumn=true时有效                  function(row, index) {return true}
-
-触发事件说明：
-序号	    事件名	                参数	        触发后的作用	                                                                用法示例
-1	        table-reload		       isResetPage   重载表格数据，若props属性searchQuery有值，则会带参重载；参数代表是否重置页码	     this.refs.clubsTable.emit('table-reload',true)
-
-绑定事件说明：
-序号	    事件名	                参数	        触发后的作用	                                                                用法示例
-1	        column-edit-click	     row	        组件内行末【编辑】按钮点击后触发，将调用父组件绑定的方法；一般用于打开对话框	      @column-edit-click="openDialogUpdate"，双引号中是自定义方法。
-
-数据格式
-1、searchQuery：
-{"code":"a","name":"a","unitName":"a"}
-
-2、otherColumn：
-[{"label":"正文图片","prop":"resourcePath","component":"ImagePopoverColumn"}]
-label：列名
-prop：字段名
-component：指定格式化组件；组件必须有label和prop两个属性，因为其分别用于绑定上面的label和prop
+2020-10-15更新：增加after-refresh绑定事件，用于传递表格数据给父组件
+2020-10-15更新：增加rowClassName，设置每一行的样式
+2020-10-15更新：增加height，设置表格高度
 
 增加末列操作按钮示例：
 <lj-table>
@@ -71,15 +38,17 @@ component：指定格式化组件；组件必须有label和prop两个属性，�
       v-loading="listLoading"
       :data="tableData"
       :key="key"
+      :height="height?height:false"
       row-key="id"
       border
       fit
       highlight-current-row
       style="width: 100%"
       :default-expand-all="defaultExpandAll"
+      :row-class-name="rowClassName"
       @selection-change="selsChange"
       @current-change="currentChangeFun">
-      <el-table-column type="index" width="100" label="序号"/>
+      <el-table-column type="index" width="50" label="序号"/>
       <el-table-column type="selection" width="45" v-if="showSelectionColumn" :selectable="selectable"/>
 
       <slot name="columns"/>
@@ -109,7 +78,7 @@ component：指定格式化组件；组件必须有label和prop两个属性，�
  * 分页数据表格
  * @description 统一风格的数据表格，简化了许多功能
  * @property {String} deleteTips 点击删除按钮弹出确认框的提示内容
- * @property {Object} searchQuery 触发事件`table-reload`，组件会调用`serviceGetPage`方法刷新表格数据，方法的参数就是`searchQuery`
+ * @property {Object} searchQuery 触发事件`table-reload`，组件会调用`serviceGetPage`方法刷新表格数据，方法的参数就是`searchQuery`，数据格式：{"code":"a","name":"a","unitName":"a"}
  * @property {Boolean} showEditBtn 是否显示右侧操作栏的【编辑】按钮
  * @property {Boolean} showDeleteBtn 是否显示右侧操作栏的【删除】按钮
  * @property {Boolean} showOptionColumn 是否显示右侧操作栏
@@ -125,6 +94,14 @@ component：指定格式化组件；组件必须有label和prop两个属性，�
  * @property {Boolean} hideOnSinglePage 是否在只有一页数据时隐藏分页组件
  * @property {Boolean} defaultExpandAll 是否默认展开所有节点
  * @property {Function} selectable 判断每一行是否可选
+ * @property {Function} rowClassName 判断每一行的样式，主要用于设置不同状态的颜色
+ *
+ * 触发事件：用法示例：this.refs.clubsTable.emit('table-reload',true)
+ * @event  table-reload(isResetPage)  重载表格数据，若props属性searchQuery有值，则会带参重载；参数代表是否重置页码
+ * 
+ * 绑定事件：用法示例：@column-edit-click="openDialogUpdate"
+ * @event  column-edit-click(row)     组件内行末【编辑】按钮点击后触发，将调用父组件绑定的方法；一般用于打开对话框
+ * @event  after-refresh(tableData)   表格数据刷新后触发，将调用父组件绑定的方法；一般用于传递表格数据
  */
 import ImagePopoverColumn from '@/components/columnFormat/imagePopoverColumn'
 export default {
@@ -148,7 +125,9 @@ export default {
     dataStructure: { type: String, default: 'page' },
     hideOnSinglePage: { type: Boolean, default: false },
     defaultExpandAll: { type: Boolean, default: false},
-    selectable: { type: Function, default: function(row, index) {return true} }
+    selectable: { type: Function, default: function(row, index) {return true} },
+    rowClassName: { type: Function, default: function({row, index}) {return true} },
+    height: { type: String|Number, default: '' },
   },
   data() {
     return {
@@ -235,6 +214,7 @@ export default {
         console.log(this.tableData)
         this.total = parseInt(response.data.data.totalCount)
         this.listLoading = false
+        this.$emit('after-refresh', this.tableData)
       })
     },
     getCtrlColumns() {
