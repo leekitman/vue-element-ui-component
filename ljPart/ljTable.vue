@@ -1,5 +1,5 @@
 <!--
-version: 1.1.11
+version: 1.1.12
 2019-07-16更新：table-reload触发刷新时，强制重置页码为第一页，因为这样更合理
 2020-02-16更新：删除成功的提示信息修改，之前一直是空的
 2020-02-17更新：刷新列表，页数不变
@@ -13,6 +13,7 @@ version: 1.1.11
 2020-10-15更新：增加after-refresh绑定事件，用于传递表格数据给父组件
 2020-10-15更新：增加rowClassName，设置每一行的样式
 2020-10-15更新：增加height，设置表格高度
+2020-10-19更新：将height默认值改为null，解决控制台报错
 
 增加末列操作按钮示例：
 <lj-table>
@@ -38,7 +39,7 @@ version: 1.1.11
       v-loading="listLoading"
       :data="tableData"
       :key="key"
-      :height="height?height:false"
+      :height="height"
       row-key="id"
       border
       fit
@@ -127,7 +128,7 @@ export default {
     defaultExpandAll: { type: Boolean, default: false},
     selectable: { type: Function, default: function(row, index) {return true} },
     rowClassName: { type: Function, default: function({row, index}) {return true} },
-    height: { type: String|Number, default: '' },
+    height: { type: String|Number, default: null },
   },
   data() {
     return {
