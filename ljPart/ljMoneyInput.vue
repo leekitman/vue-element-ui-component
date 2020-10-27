@@ -1,17 +1,20 @@
 <!--
-version: 1.0.1
+version: 1.1.0
 2020-03-17更新：使输入体验更佳
+2020-10-27更新：增加最大值最小值限制
 -->
 <template>
   <div>
-    <el-input type="number" v-model="theValue" @blur="onBlurFun" step="0.01"/>
+    <el-input type="number" v-model="theValue" @blur="onBlurFun" step="0.01" :min="min" :max="max"/>
   </div>
 </template>
 <script>
 export default {
   name: 'LjMoneyInput',
   props: {
-    value: { type: Number / String, default: '0.00' }
+    value: { type: Number / String, default: '0.00' },
+    min: { type: Number / String, default: null },
+    max: { type: Number / String, default: null }
   },
   data: function() {
     return {
