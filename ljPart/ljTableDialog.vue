@@ -1,7 +1,8 @@
 <!--
 版本更新：
 2020-09-01：增加ljTable两个配置属性
-version: 1.0.1
+2020-11-02：取消open时的刷新方法，因为lj-table初始化自动会调用服务接口，不需要外部手动刷新
+version: 1.0.2
 -->
 <template>
   <el-dialog :visible.sync="dialogVisible" :before-close="handleClose" :title="title" width="80%" :modal-append-to-body="false" :append-to-body="true" :close-on-click-modal="false">
@@ -42,7 +43,6 @@ export default {
   mounted() {
     this.$on('open', () => {
       this.openDialog()
-      this.refreshTableData(true)
     })
     this.$on('reload', (isResetPage) => {
       this.refreshTableData(isResetPage)
