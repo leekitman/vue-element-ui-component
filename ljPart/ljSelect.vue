@@ -1,10 +1,11 @@
 <!-- 树形下拉框 -->
 <!--
-version: 1.0.3
+version: 1.0.4
 更新日期：2019-07-18
 更新内容：增加props到v-model之间的计算属性，解决回显失败的问题
 更新2020-02-27：增加远程数据懒加载树机制
 更新2020-07-10：增加选项禁用过滤器
+更新2020-12-17：解决选项数据刷新，页面未重新渲染问题
 options数据结构：
 [
     {
@@ -20,7 +21,7 @@ options数据结构：
 <template>
   <el-select :value="value" @input="onChange" :value-key="valueKey" :placeholder="placeholder" :clearable="true" :disabled="disabled" filterable :multiple="multiple">
     <lj-select-options
-      v-if="(local && options && options.length > 0) || !local"
+      v-if="(local && options && options.length > 0 && !freshOptions) || !local"
       :show-field="showField"
       :expand-all="expandAll"
       :value-key="valueKey"
@@ -59,6 +60,20 @@ export default {
   },
   data() {
     return {
+      freshOptions: false
+    }
+  },
+  watch: {
+    options: {
+      handler: function(nv, ov) {
+        console.log('监听数组变化', nv, ov)
+        this.freshOptions = true
+        setTimeout(() => {
+          console.log('延时等待下拉框选项刷新')
+          this.freshOptions = false
+        }, 100)
+      },
+      deep: true
     }
   },
   methods: {
